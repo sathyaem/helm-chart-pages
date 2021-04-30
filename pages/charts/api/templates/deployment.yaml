@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pages
+    tier: service
+  name: pages
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pages
+      tier: service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pages
+        tier: service
+    spec:
+      containers:
+        - image: dellcloud/pages:monitor
+          name: pages
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 600Mi
+              cpu: 0.25
+            limits:
+              memory: 900Mi
+              cpu: 1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PAGE_CONTENT
+              valueFrom:
+                configMapKeyRef:
+                  name: pages
+                  key: PAGE_CONTENT
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql/pages?useSSL=false
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: password
+            - name: DEBUG
+              value: "true"
+            - name: LOGGING_FILE_NAME
+              value: "camden/logs/app.log"
+            - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB
+              value: debug
+            - name: LOGGING_LEVEL_ROOT
+              value: debug
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "*"
+          volumeMounts:
+            - name: node-dir
+              mountPath: /camden
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      volumes:
+        - name: node-dir
+          hostPath:
+            path: /camden
