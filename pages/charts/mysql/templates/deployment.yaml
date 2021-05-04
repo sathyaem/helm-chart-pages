@@ -1,46 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
-  namespace: dev
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
   labels:
-    app: pages
-    tier: database
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
 spec:
   selector:
     matchLabels:
-      app: pages
-      tier: database
+      app: {{ .Release.Name }}-{{ .Chart.Name }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: pages
-        tier: database
+        app: {{ .Release.Name }}-{{ .Chart.Name }}
     spec:
       containers:
-        - image: mysql:8.0
-          name: mysql
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          name: {{ .Chart.Name }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql
+                  name: {{ .Release.Name }}-{{ .Chart.Name }}
                   key: password
             - name: MYSQL_SERVICE_HOST
-              value: "mysql"
+              value: {{ .Values.env.MYSQL_SERVICE_HOST | quote }}
             - name: MYSQL_SERVICE_PORT
-              value: "3306"
+              value: {{ .Values.env.MYSQL_SERVICE_PORT | quote }}
             - name: MYSQL_DATABASE
-              value: "pages"
+              value: {{ .Values.env.MYSQL_DATABASE | quote }}
           ports:
-            - containerPort: 3306
-              name: mysql
+            - containerPort: {{ .Values.deployment.containerPort }}
           volumeMounts:
             - name: mysql-persistent-storage
-              mountPath: /var/lib/mysql
+              mountPath: {{ .Values.volumeMounts.mountPath }}
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
-            claimName: mysql-pvc-dev
+            claimName: {{ .Release.Name }}-{{ .Chart.Name }} 

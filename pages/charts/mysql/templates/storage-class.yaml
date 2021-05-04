@@ -1,9 +1,9 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: database
-  labels:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  labels:    
     addonmanager.kubernetes.io/mode: EnsureExists
-provisioner: k8s.io/minikube-hostpath
-reclaimPolicy: Retain
-volumeBindingMode: Immediate
+provisioner: {{ .Values.storageClass.provisioner }}
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}

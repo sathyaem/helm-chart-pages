@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mysql
-  namespace: dev
+  name: {{ .Chart.Name }}
 data:
-  spring.datasource.username: root
+  spring.datasource.username: {{ .Values.config.spring_datasource_username }}
+  # V1__inital_schema.sql: {{ .Values.config.V1__inital_schema }}
   V1__inital_schema.sql: |
     USE pages;
     create table pages(
