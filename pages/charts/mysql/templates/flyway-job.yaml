@@ -1,46 +1,46 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: flyway-job
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
   labels:
-    app: pages
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
 spec:
   template:
     spec:
       containers:
-        - name: flyway
-          image: flyway/flyway:6.4.4
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.job.image.repository }}:{{ .Values.job.image.tag }}
           args:
             - info
             - migrate
             - info
           env:
             - name: FLYWAY_URL
-              value: jdbc:mysql://mysql/pages
+              value: {{ .Values.job.env.FLYWAY_URL }}
             - name: FLYWAY_USER
-              value: root
+              value: {{ .Values.job.env.FLYWAY_USER }}
             - name: FLYWAY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql
+                  name: {{ .Release.Name }}-{{ .Chart.Name }}
                   key: password
             - name: FLYWAY_PLACEHOLDER_REPLACEMENT
-              value: "true"
+              value: {{ .Values.job.env.FLYWAY_PLACEHOLDER_REPLACEMENT | quote}}
             - name: FLYWAY_PLACEHOLDERS_USERNAME
               valueFrom:
                 configMapKeyRef:
-                  name: mysql
+                  name: {{ .Chart.Name }}
                   key: spring.datasource.username
             - name: FLYWAY_PLACEHOLDERS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql
-                  key: spring.datasource.password
+                  name: {{ .Release.Name }}-{{ .Chart.Name }}
+                  key: password
           volumeMounts:
             - mountPath: /flyway/sql
               name: sql
       volumes:
         - name: sql
           configMap:
-            name: mysql
+            name: {{ .Chart.Name }}
       restartPolicy: Never

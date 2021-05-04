@@ -1,14 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
   labels:
-    app: pages
-    tier: database
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
 spec:
   ports:
-    - port: 3306
+    - port: {{ .Values.service.port }}
   selector:
-    app: pages
-    tier: database
-  type: ClusterIP
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
+  type: {{ .Values.service.type }}
