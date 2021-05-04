@@ -1,6 +1,7 @@
 apiVersion: v1
 data:
-  PAGE_CONTENT: {{ .Values.config.PAGE_CONTENT}}
+  PAGE_CONTENT: Green-Pages coming from Yellow-World!
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}
+  name: pages
+  namespace: dev

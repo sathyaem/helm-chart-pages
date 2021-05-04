@@ -2,65 +2,69 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Release.Name }}-{{ .Chart.Name }}    
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+    app: pages
+    tier: service
+  name: pages
+  namespace: dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-{{ .Chart.Name }}      
+      app: pages
+      tier: service
   strategy: {}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-{{ .Chart.Name }}        
+        app: pages
+        tier: service
     spec:
       containers:
-        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          name: {{ .Chart.Name }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
+        - image: dellcloud/pages:monitor
+          name: pages
+          imagePullPolicy: Always
           ports:
-            - containerPort: {{ .Values.deployment.containerPort }}
+            - containerPort: 8080
           env:
             - name: PAGE_CONTENT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Chart.Name }}
+                  name: pages
                   key: PAGE_CONTENT
             - name: SPRING_DATASOURCE_URL
-              value: {{ .Values.env.SPRING_DATASOURCE_URL }}
+              value: jdbc:mysql://mysql/pages?useSSL=false
             - name: SPRING_DATASOURCE_USERNAME
-              value: {{ .Values.env.SPRING_DATASOURCE_USERNAME | quote}}
+              value: "root"
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-{{ .Chart.Name }}
+                  name: mysql
                   key: password
             - name: DEBUG
-              value: {{ .Values.env.DEBUG | quote}}
+              value: "true"
             - name: LOGGING_FILE_NAME
-              value: {{ .Values.env.LOGGING_FILE_NAME | quote}}
+              value: "dev/logs/app.log"
             - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB
-              value: {{ .Values.env.LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB }}
+              value: debug
             - name: LOGGING_LEVEL_ROOT
-              value: {{ .Values.env.LOGGING_LEVEL_ROOT }}
+              value: debug
             - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
               value: "*"
           volumeMounts:
             - name: node-dir
-              mountPath: /{{ .Release.Namespace }}
+              mountPath: /dev
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.readinessProbe.tcpSocket.port }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
           livenessProbe:
             httpGet:
-              path: {{ .Values.livenessProbe.httpGet.path }}
-              port: {{ .Values.livenessProbe.httpGet.port }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
       volumes:
         - name: node-dir
           hostPath:
-            path: /{{ .Release.Namespace }}
+            path: /dev
