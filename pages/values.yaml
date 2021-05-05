@@ -1,0 +1,6 @@
+mysql:  
+  mysql_svc_name: pages-mysql
+
+pages-api:
+  mysql_svc_name: pages-mysql
+      

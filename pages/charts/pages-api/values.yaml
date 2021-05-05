@@ -2,6 +2,7 @@
 deployment:
   containerPort: 8080
 
+mysql_svc_name: pages
 
 secrets:
   SDP: cGFzc3dvcmQ=
@@ -24,6 +25,8 @@ image:
 
 config:
   PAGE_CONTENT: Green-Pages coming from Yellow-World!
+
+dbname: pages
 
 env:
   SPRING_DATASOURCE_URL: jdbc:mysql://pages-mysql/pages?useSSL=false

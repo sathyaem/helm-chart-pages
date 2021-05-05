@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name }}-{{ .Chart.Name }}-{{ .Release.Namespace }}
+  name: {{ include "mysql.fullname" . }}-{{ .Release.Namespace }}
   labels:
     type: local
 spec:
-  storageClassName: {{ .Release.Name }}-{{ .Chart.Name }}
+  storageClassName: {{ include "mysql.fullname" . }}
   capacity:
     storage: {{ .Values.pv.capacity.storage }}
   accessModes:
