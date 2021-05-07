@@ -31,12 +31,27 @@ jobs:
           kubectl config get-contexts
           cat ~/.kube/config
 
-      - name: helm deploy
-        uses: koslib/helm-eks-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          command: kubectl config get-contexts &&   cat ~/.kube/config && helm lint pages            
+      - name: Install Helm3
+        run: |
+          curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+          sudo apt-get install apt-transport-https --yes
+          echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+          sudo apt-get update
+          sudo apt-get install helm
+      
+      - name: Helm Testing
+        run: |
+          kubectl config get-contexts 
+          cat ~/.kube/config
+          helm lint pages 
+          helm template pages
+
+      # - name: helm deploy
+      #   uses: koslib/helm-eks-action@master
+      #   env:
+      #     KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      #   with:
+      #     command: kubectl config get-contexts &&   cat ~/.kube/config && helm lint pages
             #helm upgrade <release name> --install --wait <chart> -f <path to values.yaml>
    
 
