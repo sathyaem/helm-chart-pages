@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
 sudo apt-get install apt-transport-https --yes
