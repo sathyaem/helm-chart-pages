@@ -31,13 +31,13 @@ jobs:
           kubectl config get-contexts
           cat ~/.kube/config
 
-      # - name: helm deploy
-      #   uses: koslib/helm-eks-action@master
-      #   env:
-      #     KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      #   with:
-      #     command: kubectl config get-contexts &&   cat ~/.kube/config
-            # helm upgrade <release name> --install --wait <chart> -f <path to values.yaml>
+      - name: helm deploy
+        uses: koslib/helm-eks-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          command: kubectl config get-contexts &&   cat ~/.kube/config
+            helm upgrade <release name> --install --wait <chart> -f <path to values.yaml>
    
 
   # deploy-to-cluster:
