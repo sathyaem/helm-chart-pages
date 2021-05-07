@@ -26,20 +26,24 @@ jobs:
       - name: Install Kubectl
         run: |
           ls          
-          bash ./scripts/install-kubectl.sh 
-          helm version   
-
-      - name: Install Helm3
-        run: |
-          bash ./scripts/install-helm.sh
-          helm version
+          bash ./scripts/install-kubectl.sh
       
-      - name: Helm Testing
+      - name: Helm Lint Testing
         run: |
           bash ./scripts/helm-test.sh
 
+      - name: Deploy chart to test cluster
+        run: |
+          bash ./scripts/deploy.sh staging
+
+      - name: DevOps Contract Testing
+        run: |
+          bash ./scripts/devops-contract-test.sh  
+
+
   deploy-to-staging:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest 
+    needs: testing
     steps:
       - uses: actions/checkout@v2
       - name: AWS Credentials
