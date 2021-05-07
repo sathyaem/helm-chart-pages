@@ -5,7 +5,40 @@ on:
     branches: [master]
 
 jobs:
-  deploy:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run chart-testing (lint)
+        id: lint
+        uses: HexF/chart-testing-action@v3.0.0
+        with:
+          command: lint
+      
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.0.0-alpha.3
+        with:
+          install_local_path_provisioner: true
+        # Only build a kind cluster if there are chart changes to test.
+        # if: steps.lint.outputs.changed == 'true'
+
+      - name: Install Kubectl
+        run: |
+          ls          
+          bash ./scripts/install-kubectl.sh 
+          helm version   
+
+      - name: Install Helm3
+        run: |
+          bash ./scripts/install-helm.sh
+          helm version
+      
+      - name: Helm Testing
+        run: |
+          bash ./scripts/helm-test.sh
+
+  deploy-to-staging:
     runs-on: ubuntu-latest    
     steps:
       - uses: actions/checkout@v2
@@ -33,39 +66,3 @@ jobs:
       - name: Helm Testing
         run: |
           bash ./scripts/helm-test.sh
-
-
-      # - name: helm deploy
-      #   uses: koslib/helm-eks-action@master
-      #   env:
-      #     KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      #   with:
-      #     command: kubectl config get-contexts &&   cat ~/.kube/config && helm lint pages
-            #helm upgrade <release name> --install --wait <chart> -f <path to values.yaml>
-   
-
-  # deploy-to-cluster:
-  #   needs: build-artifact
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: Install Kubectl
-  #       run: |
-  #         sudo apt-get update
-  #         curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-  #         chmod +x ./kubectl
-  #         sudo mv ./kubectl /usr/local/bin/kubectl
-  #         kubectl version --client
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ap-south-1
-  #     - name: EKS Login
-  #       run: |
-  #         aws eks --region ap-south-1 update-kubeconfig --name dees-cloud
-  #         kubectl config get-contexts
-  #         kubectl apply -f deployment/namespace.yaml
-  #         kubectl apply -f deployment/service.yaml
-  #         kubectl apply -f deployment/deployment.yaml
