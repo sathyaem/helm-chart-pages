@@ -37,7 +37,8 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           command: kubectl config get-contexts &&   cat ~/.kube/config
-            helm upgrade <release name> --install --wait <chart> -f <path to values.yaml>
+            helm lint
+            #helm upgrade <release name> --install --wait <chart> -f <path to values.yaml>
    
 
   # deploy-to-cluster:
