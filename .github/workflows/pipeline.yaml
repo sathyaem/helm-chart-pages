@@ -23,7 +23,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Check kubectl
         run: |
-          bash ../../scripts/install-kubectl.sh          
+          ls
+          ls ../
+          ls ../../
+          sudo chmod 777 ../../scripts/install-kubectl.sh
+          bash ../../scripts/install-kubectl.sh      
 
       - name: Install Helm3
         run: |
