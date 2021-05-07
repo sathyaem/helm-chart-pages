@@ -2,7 +2,7 @@
 deployment:
   containerPort: 8080
 
-mysql_svc_name: pages
+# mysql_svc_name: pages
 
 secrets:
   SDP: cGFzc3dvcmQ=

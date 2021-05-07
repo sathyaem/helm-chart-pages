@@ -29,7 +29,8 @@ env:
 volumeMounts:
   mountPath: /var/lib/mysql
 
-mysql_svc_name: mysql
+# exports:
+#   mysql_svc_name: mysql
 
 
 job:
