@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "db757ad6-1e71-4bba-a66e-ff4a3f677051",
+		"name": "pages-microservice",
+		"description": "API  tests for pages microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get-Message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{BASE_URL}}",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					]
+				},
+				"description": "Api test for HomeController"
+			},
+			"response": []
+		},
+		{
+			"name": "List-Pages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{BASE_URL}}/pages",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"pages"
+					]
+				},
+				"description": "GET - Api test for Pages"
+			},
+			"response": []
+		},
+		{
+			"name": "Get-Pages-B4-POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{BASE_URL}}/pages/1",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"pages",
+						"1"
+					]
+				},
+				"description": "GET - Api test for Pages"
+			},
+			"response": []
+		},
+		{
+			"name": "POST-Pages",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"last_created_page_id\", jsonData.id);",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"businessName\": \"Uber\", \"address\": \"SanFrancisco, CA, USA\", \"categoryId\": 101, \"contactNumber\": \"0045987869\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{BASE_URL}}/pages/",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"pages",
+						""
+					]
+				},
+				"description": "CREATE - Api test for Pages"
+			},
+			"response": []
+		},
+		{
+			"name": "Get-Pages After-POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{BASE_URL}}/pages/{{last_created_page_id}}",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"pages",
+						"{{last_created_page_id}}"
+					]
+				},
+				"description": "GET - Api test for Pages"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT-Pages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"businessName\": \"Uber-Technologies\", \"address\": \"SanFrancisco, CA, USA\", \"categoryId\": 101, \"contactNumber\": \"0045987869\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{BASE_URL}}/pages/{{last_created_page_id}}",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"pages",
+						"{{last_created_page_id}}"
+					]
+				},
+				"description": "UPDATE - Api test for Pages"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE-Pages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{BASE_URL}}/pages/{{last_created_page_id}}",
+					"protocol": "http",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"pages",
+						"{{last_created_page_id}}"
+					]
+				},
+				"description": "DELETE - Api test for Pages"
+			},
+			"response": []
+		}
+	]
+}
