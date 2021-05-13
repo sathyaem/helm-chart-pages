@@ -17,7 +17,7 @@ helm upgrade --install "$RELEASE_NAME" pages --debug
 # helm upgrade --install "$RELEASE_NAME" pages --create-namespace --debug
 echo '---------------------Started testing--------------'
 sleep 60s
-helm test "$RELEASE_NAME" --logs
+helm test "$RELEASE_NAME"
 echo '---------------------Completed testing------------'
 
 helm uninstall api
