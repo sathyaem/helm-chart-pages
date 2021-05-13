@@ -72,4 +72,4 @@ jobs:
       #     bash ./scripts/helm-test.sh
       - name: Deploy to staging
         run: |
-          bash: ./scripts/deploy.sh ${{ secrets.STAGING_NAMESPACE }}
+          bash ./scripts/deploy.sh ${{ secrets.STAGING_NAMESPACE }}
