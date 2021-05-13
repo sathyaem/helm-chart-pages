@@ -10,6 +10,7 @@ helm template pages
 
 helm upgrade --install api pages
 echo '---------------------Started testing--------------'
+kubectl logs contract-test
 helm test api
 echo '---------------------Completed testing------------'
 
