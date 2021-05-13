@@ -14,5 +14,5 @@ spec:
       args:        
         - --env-var 
         - BASE_URL=api-pages-api.test.svc.cluster.local:8080
-        # - BASE_URL={{ include "api.getserviceipaddress" . }}:8080
+      
   restartPolicy: Never      
