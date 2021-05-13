@@ -8,9 +8,10 @@ RELEASE_NAME="$2"
 
 kubectl config get-contexts
 kubectl create ns "$NAMESPACE"
-kubectl config set-context --current --namespace "$NAMESPACE"      
+kubectl config set-context --current --namespace "$NAMESPACE" 
+kubectl config get-contexts     
 helm lint pages 
-helm template pages
+# helm template pages
 
 
 echo "------------------------Start time was is--------  $(date +%Y-%m-%dT%H%M%S%z)"
