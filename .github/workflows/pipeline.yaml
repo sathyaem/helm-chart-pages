@@ -32,9 +32,9 @@ jobs:
         run: |
           bash ./scripts/helm-test.sh
 
-      - name: Deploy chart to test cluster
-        run: |
-          bash ./scripts/deploy.sh staging
+      # - name: Deploy chart to test cluster
+      #   run: |
+      #     bash ./scripts/deploy.sh staging
 
       # - name: DevOps Contract Testing
       #   run: |

@@ -8,7 +8,7 @@ helm lint pages
 helm template pages
 
 
-helm upgrade api pages
+helm upgrade --install api pages
 echo '---------------------Started testing--------------'
 helm test api
 echo '---------------------Completed testing------------'
