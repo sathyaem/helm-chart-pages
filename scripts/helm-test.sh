@@ -13,11 +13,16 @@ helm lint pages
 helm template pages
 
 
+start='date +%s'
 helm upgrade --install "$RELEASE_NAME" pages --debug
+end='date +%s'
+runtime=$((end-start))
+echo "------------------------Execution time was $runtime  seconds-------------------------"
+
 # helm upgrade --install "$RELEASE_NAME" pages --create-namespace --debug
 echo '---------------------Started testing--------------'
 sleep 60s
-helm test "$RELEASE_NAME"
+helm test "$RELEASE_NAME" --logs
 echo '---------------------Completed testing------------'
 
 helm uninstall api
