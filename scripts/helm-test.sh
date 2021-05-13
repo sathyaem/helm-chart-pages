@@ -15,6 +15,6 @@ kubectl get pods
 helm test api --logs
 echo '---------------------Completed testing------------'
 
-helm uninstall api pages --logs
+helm uninstall api
 kubectl delete ns test
 

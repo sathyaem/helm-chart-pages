@@ -18,5 +18,5 @@ spec:
       args: 
         # - curl  http://$API_PAGES_API_SERVICE_HOST:8080
         # - curl  http://{{ .Release.Name }}_{{ .Chart.Name }}_SERVICE_HOST:8080
-        - curl  http://api-pages-api.test.svc.cluster.local:8080
+        - curl  http://api-pages-api.{{ .Release.Namespace }}.svc.cluster.local:8080
   restartPolicy: Never
