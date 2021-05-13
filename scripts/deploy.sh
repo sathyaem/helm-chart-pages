@@ -13,4 +13,9 @@ kubectl get ns "$NAMESPACE" &> /dev/null || kubectl create ns "$NAMESPACE"
 
 helm upgrade --install "$RELEASE_NAME" pages -n "$NAMESPACE" --debug
 
+sleep 30s
+
+kubectl get pods -n "$NAMESPACE"
+
+
 echo "----------------------Completed Installation of  pages----------------------------------"
