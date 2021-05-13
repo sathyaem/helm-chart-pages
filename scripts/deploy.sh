@@ -6,7 +6,7 @@ echo Releasename = "$2"
 echo "----------------------Installing pages----------------------------------"
 
 
-NAMESPACE=$1
+NAMESPACE="$1"
 RELEASE_NAME="$2"
 
 kubectl get ns "$NAMESPACE" &> /dev/null || kubectl create ns "$NAMESPACE"
