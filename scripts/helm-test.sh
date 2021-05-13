@@ -10,8 +10,7 @@ helm template pages
 
 helm upgrade --install api pages
 echo '---------------------Started testing--------------'
-sleep 30s
-
+sleep 60s
 kubectl get pods
 kubectl logs contract-test
 helm test api
