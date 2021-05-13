@@ -13,11 +13,14 @@ helm lint pages
 helm template pages
 
 
-start='date +%s'
+
+start=$(date +%Y-%m-%dT%H%M%S%z)
 helm upgrade --install "$RELEASE_NAME" pages --debug
-end='date +%s'
-runtime=$end-$start
-echo "------------------------Execution time was $runtime  seconds-------------------------"
+end=$(date +%Y-%m-%dT%H%M%S%z)
+runtime=$((start - end))
+
+
+echo "------------------------Execution time was----" $runtime  "----seconds-------------------------"
 
 # helm upgrade --install "$RELEASE_NAME" pages --create-namespace --debug
 echo '---------------------Started testing--------------'

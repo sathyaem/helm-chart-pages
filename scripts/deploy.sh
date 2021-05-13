@@ -8,7 +8,9 @@ echo "----------------------Installing pages----------------------------------"
 
 NAMESPACE=$1
 RELEASE_NAME=$2
-FOUND=kubectl get ns | grep -i -w -c "$NAMESPACE" 
+kubectl get ns | grep -i -w -c "$NAMESPACE"
+
+FOUND="$(kubectl get ns | grep -i -w -c "$NAMESPACE")"
 
 echo "Did you find the namespace? - $FOUND"
 
