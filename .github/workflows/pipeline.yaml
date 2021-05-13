@@ -30,7 +30,7 @@ jobs:
       
       - name: Helm Testing
         run: |
-          bash ./scripts/helm-test.sh ${{ secrets.STAGING_NAMESPACE }}
+          bash ./scripts/helm-test.sh ${{ secrets.STAGING_NAMESPACE }} ${{ secrets.RELEASE_NAME }}
 
       # - name: Deploy chart to test cluster
       #   run: |
@@ -65,11 +65,11 @@ jobs:
 
       - name: Install Helm3
         run: |
-          bash ./scripts/install-helm.sh ${{ secrets.STAGING_NAMESPACE }}
+          bash ./scripts/install-helm.sh
       
       # - name: Helm Testing
       #   run: |
       #     bash ./scripts/helm-test.sh
       - name: Deploy to staging
         run: |
-          bash ./scripts/deploy.sh ${{ secrets.STAGING_NAMESPACE }}
+          bash ./scripts/deploy.sh ${{ secrets.STAGING_NAMESPACE }} ${{ secrets.RELEASE_NAME }}

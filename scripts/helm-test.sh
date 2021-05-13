@@ -3,7 +3,7 @@ set -e
 
 echo Namespace = "$1"
 NAMESPACE=$1
-RELEASE_NAME=api
+RELEASE_NAME="$2"
 
 
 kubectl config get-contexts
