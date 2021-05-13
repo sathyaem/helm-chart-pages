@@ -3,8 +3,8 @@ set -e
 
 echo Namespace = "$1"
 NAMESPACE=$1
+RELEASE_NAME="test"
 
-helm upgrade --install "$RELEASE_NAME" pages --create-namespace --debug
 
 kubectl config get-contexts
 kubectl create ns "$NAMESPACE"
@@ -13,10 +13,11 @@ helm lint pages
 helm template pages
 
 
-helm upgrade --install api pages
+helm upgrade --install "$RELEASE_NAME" pages --debug
+# helm upgrade --install "$RELEASE_NAME" pages --create-namespace --debug
 echo '---------------------Started testing--------------'
 sleep 60s
-helm test api --logs
+helm test "$RELEASE_NAME" --logs
 echo '---------------------Completed testing------------'
 
 helm uninstall api
