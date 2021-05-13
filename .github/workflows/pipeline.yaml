@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run chart-testing (lint)
+      - name: Chart-testing (lint)
         id: lint
         uses: HexF/chart-testing-action@v3.0.0
         with:
@@ -28,9 +28,9 @@ jobs:
           ls          
           bash ./scripts/install-kubectl.sh
       
-      - name: Helm Lint Testing
+      - name: Helm Testing
         run: |
-          bash ./scripts/helm-test.sh
+          bash ./scripts/helm-test.sh ${{ secrets.STAGING_NAMESPACE }}
 
       # - name: Deploy chart to test cluster
       #   run: |
@@ -65,8 +65,11 @@ jobs:
 
       - name: Install Helm3
         run: |
-          bash ./scripts/install-helm.sh
+          bash ./scripts/install-helm.sh ${{ secrets.STAGING_NAMESPACE }}
       
-      - name: Helm Testing
+      # - name: Helm Testing
+      #   run: |
+      #     bash ./scripts/helm-test.sh
+      - name: Deploy to staging
         run: |
-          bash ./scripts/helm-test.sh
+          bash: ./scripts/deploy.sh ${{ secrets.STAGING_NAMESPACE }}
