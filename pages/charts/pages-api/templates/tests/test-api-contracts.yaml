@@ -13,6 +13,6 @@ spec:
       command: ["newman","run", "https://cloud-native-labs.s3.ap-south-1.amazonaws.com/J21/labguide/pages-testsuite.json" ]
       args:        
         - --env-var 
-        - BASE_URL=api-pages-api.dev.svc.cluster.local:8080 
-  restartPolicy: Never       
-        
+        - BASE_URL=api-pages-api.dev.svc.cluster.local:8080
+                
+  restartPolicy: Never      
