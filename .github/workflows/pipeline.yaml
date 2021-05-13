@@ -36,9 +36,9 @@ jobs:
         run: |
           bash ./scripts/deploy.sh staging
 
-      - name: DevOps Contract Testing
-        run: |
-          bash ./scripts/devops-contract-test.sh  
+      # - name: DevOps Contract Testing
+      #   run: |
+      #     bash ./scripts/devops-contract-test.sh  
 
 
   deploy-to-staging:
