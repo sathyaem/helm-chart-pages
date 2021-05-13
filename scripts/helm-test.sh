@@ -21,7 +21,7 @@ echo "------------------------End time is--------  $(date +%Y-%m-%dT%H%M%S%z)"
 
 # helm upgrade --install "$RELEASE_NAME" pages --create-namespace --debug
 echo '---------------------Started testing--------------'
-sleep 30s
+sleep 60s
 kubectl get po -n "$NAMESPACE" 
 kubectl get svc -n "$NAMESPACE" 
 helm test "$RELEASE_NAME" --logs
