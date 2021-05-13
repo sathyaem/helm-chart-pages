@@ -12,8 +12,7 @@ helm upgrade --install api pages
 echo '---------------------Started testing--------------'
 sleep 60s
 kubectl get pods
-helm test api
-kubectl logs contract-test
+helm test api --logs
 echo '---------------------Completed testing------------'
 
 helm uninstall api pages
