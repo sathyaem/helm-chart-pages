@@ -15,6 +15,7 @@ spec:
       name: {{ .Chart.Name }}-test
       imagePullPolicy: {{ .Values.imagePullPolicy }}
       command: ["/bin/sh","-c"]      
+      
       args: 
         # - curl  http://$API_PAGES_API_SERVICE_HOST:8080
         # - curl  http://{{ .Release.Name }}_{{ .Chart.Name }}_SERVICE_HOST:8080
