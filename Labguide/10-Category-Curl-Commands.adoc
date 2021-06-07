@@ -1,0 +1,56 @@
+= Category Service
+:stylesheet: boot-flatly.css
+:nofooter:
+:data-uri:
+
+
+[#category-curl-section,refText=category-curl]
+== Curl commands
+
+Requires the service to be running on localhost and port 8080. When working on the cluster, ensure that you port-forward the service to 8080.
+
+
+1.Create a category
+
+[source,shell script]
+----------
+
+curl -i -XPOST -H"Content-Type: application/json" localhost:8080/category -d"{\"id\": \"100\", \"categoryName\": \"Transport\", \"description\": \"Taxi services\"}"
+
+----------
+
+2.Get a category by ID
+
+[source,shell script]
+----------
+
+curl -i localhost:8080/category/100
+
+----------
+
+3.Update a category by ID
+
+[source,shell script]
+----------
+
+curl -i -XPUT -H"Content-Type: application/json" localhost:8080/category/100 -d"{\"id\": \"100\", \"categoryName\": \"Transport\", \"description\": \"Paid Taxi services\"}"
+
+----------
+
+4.List all category
+
+[source,shell script]
+----------
+
+curl -i localhost:8080/category
+
+----------
+
+5.Delete a page by ID
+
+[source,shell script]
+----------
+
+curl -i -XDELETE -H"Content-Type: application/json" localhost:8080/category/100
+
+----------

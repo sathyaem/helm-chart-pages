@@ -1,0 +1,30 @@
+= Dockerize an Application
+:stylesheet: boot-flatly.css
+:nofooter:
+:data-uri:
+
+== Learning Outcomes
+After completing the lab, you will be able to:
+
+ . Learn the core concepts of Containerization (Docker)
+ . Create, build & run a docker image of the application
+ . Push the docker image to docker hub
+ . Verify and monitor the docker container
+ . Describe how to use version control and source code management using Git
+
+== Build the application
+
+. Requirement- Expose a web api by implementing Http GET method which returns a simple message such as "Hello Kubernetes!".
+
+. Design - A Simple controller and a bootstrapper which wraps the host server along with necessary dependencies to run in a containerized environment.
+
+. Implementation (Multiple technology choices) +
+
+
+
+.. <<1.1-.NET.adoc#, Develop using .NET Core>>
+.. <<1.1-JavaSpringBoot.adoc#, Develop using Java Spring Boot>>
+
++
+You can use any one of the above options for building the application & dockerizing.
+

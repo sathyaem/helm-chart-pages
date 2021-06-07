@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Dockerize an Application</title>
+<style>
+/* Based on Flatly from Bootswatch (https://bootswatch.com/flatly/) */
+@import url("//fonts.googleapis.com/css?family=Lato:400,700,400italic");
+
+/* document body (contains all content) */
+body {
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.42857143;
+  color: #2c3e50;
+  background-color: #ffffff;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+/* document header (contains title etc) */
+#header {
+  width: 100%;
+}
+#header>h1 {
+  border-bottom: 1px solid #ddddd8;
+  padding-bottom: 8px;
+}
+
+/* headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  color: inherit;
+}
+h1,
+h2,
+h3 {
+  margin-top: 21px;
+  margin-bottom: 10.5px;
+}
+h4,
+h5,
+h6 {
+  margin-top: 10.5px;
+  margin-bottom: 10.5px;
+}
+h1 {
+  font-size: 3em; 
+/*   font-size: 39px;  */
+}
+h2 {
+  font-size: 32px;
+}
+h3 {
+  font-size: 26px;
+}
+h4 {
+  font-size: 19px;
+}
+h5 {
+  font-size: 15px;
+}
+h6 {
+  font-size: 13px;
+}
+
+/* plain paragraph text */
+.paragraph {
+/*   font-family: sans-serif; */
+  margin: 0 0 10.5px;
+}
+p {
+/*   font-family: sans-serif; */
+  margin: 0 0 10.5px;
+}
+
+/* blockquote text */
+.quoteblock {
+  font-style: italic;
+}
+blockquote {
+  padding: 10.5px 21px;
+  margin: 0 0 21px;
+  font-size: 18.75px;
+  border-left: 5px solid #ecf0f1;
+}
+blockquote p:last-child,
+blockquote ul:last-child,
+blockquote ol:last-child {
+  margin-bottom: 0;
+}
+.blockquote-reverse,
+blockquote.pull-right {
+  padding-right: 15px;
+  padding-left: 0;
+  border-right: 5px solid #ecf0f1;
+  border-left: 0;
+  text-align: right;
+}
+.blockquote-reverse footer:before,
+blockquote.pull-right footer:before,
+.blockquote-reverse small:before,
+blockquote.pull-right small:before,
+.blockquote-reverse .small:before,
+blockquote.pull-right .small:before {
+  content: '';
+}
+.blockquote-reverse footer:after,
+blockquote.pull-right footer:after,
+.blockquote-reverse small:after,
+blockquote.pull-right small:after,
+.blockquote-reverse .small:after,
+blockquote.pull-right .small:after {
+  content: '\00A0 \2014';
+}
+
+/* blockquote attribution text */
+.attribution,
+.cite,
+blockquote footer,
+blockquote small,
+blockquote .small {
+  display: block;
+  font-size: 80%;
+  line-height: 1.42857143;
+  color: #b4bcc2;
+}
+.attribution:before,
+blockquote footer:before,
+blockquote small:before,
+blockquote .small:before {
+  content: '\2014 \00A0';
+}
+
+/* unordered list */
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 10.5px;
+}
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin-bottom: 0;
+}
+
+
+/* links */
+a {
+  color: #18bc9c;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  color: #18bc9c;
+  text-decoration: underline;
+}
+a:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+/* horizontal rules */
+hr {
+  margin-top: 21px;
+  margin-bottom: 21px;
+  border: 0;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* table */
+table {
+  background-color: transparent;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 21px;
+  border-collapse: collapse;
+}
+table col[class*="col-"] {
+  position: static;
+  float: none;
+  display: table-column;
+}
+table td[class*="col-"],
+table th[class*="col-"] {
+  position: static;
+  float: none;
+  display: table-cell;
+}
+
+/* table caption */
+caption {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #b4bcc2;
+  text-align: left;
+}
+
+/* table header row */
+thead {
+  border-bottom: 2px solid #ecf0f1;
+}
+
+/* table header cell */
+th {
+  text-align: left;
+  padding-left: 8px;
+}
+
+/* table footer */
+tfoot {
+  color: #807F81;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* table cell */
+td {
+  border-top: 1px solid #ecf0f1;
+}
+td p {
+  margin: auto;
+  padding: 8px;
+}
+
+/* table body */
+tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+tbody > tr:hover {
+  background-color: #ecf0f1;
+}
+
+/* inline code */
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;  
+}
+kbd {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #ffffff;
+  background-color: #333333;
+  border-radius: 0;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+          box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+kbd kbd {
+  padding: 0;
+  font-size: 100%;
+  font-weight: bold;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+pre {
+  display: block;
+  padding: 10.5px;
+  margin: 0 0 10.5px;
+  font-size: 15px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333333;
+  background-color: #f5f5f5;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+}
+pre code {
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre-wrap;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* image */
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+/* footer section */
+#footer {
+  margin-top: 22px;
+  padding: 14px 16px;
+  color: white;
+  background-color: #2c3e50;
+}
+
+/* responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+/* table of Contents sidebar */
+#toctitle {
+  color: #ffffff;
+}
+
+#toc ul {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#toc li {
+  display: block;
+}
+
+#toc a {
+  background-color: #2c3e50;
+  float: left;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+#toc li a:hover {
+  background-color: #1a242f;
+  text-decoration: none;
+}
+
+#toc:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>Dockerize an Application</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_learning_outcomes">Learning Outcomes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After completing the lab, you will be able to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Learn the core concepts of Containerization (Docker)</p>
+</li>
+<li>
+<p>Create, build &amp; run a docker image of the application</p>
+</li>
+<li>
+<p>Push the docker image to docker hub</p>
+</li>
+<li>
+<p>Verify and monitor the docker container</p>
+</li>
+<li>
+<p>Describe how to use version control and source code management using Git</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_build_the_application">Build the application</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Requirement- Expose a web api by implementing Http GET method which returns a simple message such as "Hello Kubernetes!".</p>
+</li>
+<li>
+<p>Design - A Simple controller and a bootstrapper which wraps the host server along with necessary dependencies to run in a containerized environment.</p>
+</li>
+<li>
+<p>Implementation (Multiple technology choices)<br></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><a href="1.1-.NET.html">Develop using .NET Core</a></p>
+</li>
+<li>
+<p><a href="1.1-JavaSpringBoot.html">Develop using Java Spring Boot</a></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You can use either one of the above choices of technology for building the application. Note: Do not use both the links as it might create in-consistency within the codebas</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setting_up_the_codebase">Setting up the codebase</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a repository called <code>pages</code> in your GitHub account. You will need to initialize the local codebase as a git repo &amp; add your remote repository url prior to executing any commits on it</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">git init
+git remote add origin https:<span style="color:#777">//github.com/[your-github-user-name]/pages.git</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Commit code to your github repository</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">git add .
+git config --global user.name <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">your-team-name</span><span style="color:#710">&quot;</span></span>
+git config --global user.email <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">your-git-email-address</span><span style="color:#710">&quot;</span></span>
+git commit -m <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Spring Boot - Lab 1</span><span style="color:#710">&quot;</span></span>
+git push -u origin master</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+= Kubernetes - Deploying application workloads
+:stylesheet: boot-flatly.css
+:nofooter:
+:data-uri:
+:linkattrs:
+
+In this lab, we will deploy the application by leveraging the docker image, to a kubernetes cluster.
+
+== Learning Outcomes
+After completing the lab, you will be able to:
+
+ . Describe how to create Kubernetes Pods
+ . Understand the benefits and challenges of using Pods in Kubernetes
+ . Run your workload inside a pod
+ 
+== Prerequisites before Kubernetizing
+   
+Before starting the lab, verify the pages image created in the previous lab exists in
+ link:https://hub.docker.com["docker hub", window="_blank"]
+
+
+=== Start the minikube
+
+. Start minikube locally
+`minikube start --driver=virtualbox`
+
+. Verify the kubectl context `kubectl config get-contexts` is set to minikube. If not, set it to minikube `kubectl config use-context minikube`
+
+=== Execute your workload inside kubernetes pod
+
+. Create the Pod to host the container
+
++
+[source, java]
+-------------
+kubectl run pages --image=[docker-username]/pages:1.0 
+-------------
+
+. Verify the created objects
+
++
+[source,java]
+-------------------
+kubectl get po -o wide
+-------------------
+
+.   Access the application by port-forwarding on `localhost:8080`
++
+[source,java]
+-------------------
+kubectl port-forward po/pages 8080:8080
+
+curl localhost:8080
+-------------------
+
+. Stop the port-forward by pressing `CTRL-C`

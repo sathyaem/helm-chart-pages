@@ -1,0 +1,649 @@
+= ConfigMap and Secrets
+:stylesheet: boot-flatly.css
+:nofooter:
+:data-uri:
+:icons: font
+:linkattrs:
+
+This lab consists of a list of exercises to demonstrate and understand
+the most commonly used kubernetes commands and concepts to ramp up your kubernetes competency skills in the area of ConfigMap and Secrets.
+
+
+
+== Learning Outcomes
+After completing the lab, you will be able to understand and use Kubernetes concepts related to the below topics:
+
+. ConfigMaps
+. Secrets
+
+
+=== Start the minikube
+
+. Start minikube locally
+`minikube start --driver=virtualbox`
+
+. Verify the kubectl context `kubectl config get-contexts` is set to minikube. If not, set it to minikube `kubectl config use-context minikube`
+
+[NOTE]
+====
+Create all manifest resources in the directory `~/workspace/kubernetes-manifests/competencies`. Watch out for the right file names in the solution section.
+====
+
+=== Configmaps and Secrets
+
+. Create a ConfigMap course-config from literal values with key=`course` and value=`k8s` imperatively. Create environment variables for nginx pod with key=`course` and value to be read from the configmap.
+Hint: `configMapKeyRef`
+
++
+
+.Click to see solution
+[%collapsible]
+====
+[source, shell script]
+------------------
+kubectl create configmap course-config --from-literal=course=k8s
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-1.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    env:
+      - name: course
+        valueFrom:
+          configMapKeyRef:
+            name: course-config
+            key: course
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-1.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get cm course-config
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx
+kubectl exec -it nginx -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+. Create the above ConfigMap using yaml. Create a nginx pod and read the environment variables key and value from ConfigMap
+Hint: `configMapRef`
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/cm-2.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+data:
+  course: k8s
+kind: ConfigMap
+metadata:
+  name: course-config
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-1.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    env:
+      - name: course
+        valueFrom:
+          configMapKeyRef:
+            name: course-config
+            key: course
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/cm-2.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-1.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get cm course-config
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx
+kubectl exec -it nginx -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+
+. Create a ConfigMap `pages-config` from literal values with key='PAGE_CONTENT' and value=`Hello from pages environment` imperatively. Create environment variables for pages aplication with key=`PAGE_CONTENT` and value to be read from the configmap. - Instructions
+
++
+
+.Click to see solution
+[%collapsible]
+====
+[source, shell script]
+------------------
+kubectl create configmap pages-config --from-literal=PAGE_CONTENT="Hello from pages environment"
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-3.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    env:
+      - name: PAGE_CONTENT
+        valueFrom:
+          configMapKeyRef:
+            name: pages-config
+            key: PAGE_CONTENT
+------------------
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-3.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get cm pages-config
+------------------
+[source, shell script]
+------------------
+kubectl get po pages
+kubectl exec -it pages -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+. Create the above ConfigMap using yaml. Create a nginx pod and read the environment variables key and value from ConfigMap. - Instructions
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/cm-4.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+data:
+  PAGE_CONTENT: Hello from pages environment
+kind: ConfigMap
+metadata:
+  name: pages-config
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-4.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    env:
+      - name: PAGE_CONTENT
+        valueFrom:
+          configMapKeyRef:
+            name: pages-config
+            key: PAGE_CONTENT
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/cm-4.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-4.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get cm pages-config
+------------------
+[source, shell script]
+------------------
+kubectl get po pages
+kubectl exec -it pages -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+
+. Create a ConfigMap from a properties file with key=`course` and value=`k8s`. Create a nginx pod and mount the configmap as a volume.
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/cm-5.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: course-config
+data:
+  course-info.properties: |
+    course: k8s
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-5.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  volumes:
+    - name: config-vol
+      configMap:
+        name: course-config
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts:
+      - name: config-vol
+        mountPath: /etc/config
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/cm-5.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-5.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get cm course-config
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx
+kubectl exec -it nginx -- ls /etc/config
+kubectl exec -it nginx -- cat /etc/config/course-info.properties
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+
+. Create a configMap from application.properties used by Pages application. Mount this configmap as a volume while creating pod for pages application - Instructions
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/cm-6.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pages-config
+data:
+  application.properties: |
+    PAGE_CONTENT: Hello from pages environment
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-6.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  volumes:
+    - name: config-vol
+      configMap:
+        name: pages-config
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    volumeMounts:
+      - name: config-vol
+        mountPath: /etc/config
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/cm-6.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-6.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get cm pages-config
+------------------
+[source, shell script]
+------------------
+kubectl get po pages
+kubectl exec -it pages -- ls /etc/config
+kubectl exec -it pages -- cat /etc/config/application.properties
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+
+. Create a secret `course-secret` from literal value with key=`auth-token` and value=base 64 encoded value of `token-e8ujdekdjueke` imperatively. Create environment variable for nginx pod with key=`auth-token` and value to be read from the secret.
+Hint: `secretMapKeyRef`
+
++
+
+.Click to see solution
+[%collapsible]
+====
+[source, shell script]
+------------------
+kubectl create secret generic course-secret --from-literal=auth-token=token-e8ujdekdjueke
+kubectl get secret course-secret
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-7.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    env:
+      - name: auth-token
+        valueFrom:
+          secretKeyRef:
+            name: course-secret
+            key: auth-token
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-7.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx
+kubectl exec -it nginx -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+
+. Create a secret `course-secret` from literal value with key=`auth-token` and value=base 64 encoded value of `token-e8ujdekdjueke` using manifest files. Create environment variable for nginx pod with key=`auth-token` and value to be read from the secret.
+Hint: `secretMapKeyRef`
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/secret-8.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: course-secret
+data:
+  auth-token: dG9rZW4tZTh1amRla2RqdWVrZQ==
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-8.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    env:
+      - name: auth-token
+        valueFrom:
+          secretKeyRef:
+            name: course-secret
+            key: auth-token
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/secret-8.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-8.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get secret course-secret
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx
+kubectl exec -it nginx -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+
+. Create a secret `pages-secret` from literal values with key=`password` and value=base 64 encoded value of `admin@123` imperatively. Create environment for Pages application with key=`password` and value to be read from the secret.
+
++
+
+.Click to see solution
+[%collapsible]
+====
+[source, shell script]
+------------------
+kubectl create secret generic pages-secret --from-literal=password=admin@123
+kubectl get secret pages-secret
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-9.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    env:
+      - name: password
+        valueFrom:
+          secretKeyRef:
+            name: pages-secret
+            key: password
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-9.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po pages
+kubectl exec -it pages -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+
+. Create a secret `pages-secret` from literal values with key=`password` and value=base 64 encoded value of `admin@123` using manifest files. Create environment for Pages application with key=`password` and value to be read from the secret.
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/secret-10.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+data:
+  password: YWRtaW5AMTIz
+kind: Secret
+metadata:
+  name: pages-secret
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-10.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    env:
+      - name: password
+        valueFrom:
+          secretKeyRef:
+            name: pages-secret
+            key: password
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/secret-10.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-10.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po pages
+kubectl exec -it pages -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+
+
+. Create the above secret from a properties file with key=`password` and value=base 64 encoded value of `admin@123`. Mount this secret as a volume while creating an nginx pod.
+
++
+
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/configuration/secret-11.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+data:
+  application.properties: cGFzc3dvcmQ9YWRtaW5AMTIzCg==
+kind: Secret
+metadata:
+  name: pages-secret
+------------------
+
+`~/workspace/kubernetes-manifests/competencies/configuration/pod-11.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  volumes:
+    - name: secret-vol
+      secret:
+        secretName: pages-secret
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    volumeMounts:
+      - name: secret-vol
+        mountPath: /etc/config
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/secret-11.yaml
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/configuration/pod-11.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get secret pages-secret
+kubectl get po pages
+kubectl exec -it pages -- cat /etc/config/application.properties
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====

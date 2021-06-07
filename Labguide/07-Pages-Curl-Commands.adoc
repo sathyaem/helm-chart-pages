@@ -1,0 +1,54 @@
+= Pages Service
+:stylesheet: boot-flatly.css
+:nofooter:
+:data-uri:
+
+
+[#pages-curl-section,refText=pages-curl]
+== Curl commands
+
+Requires the service to be running on localhost and port 8080. When working on the cluster, ensure that you port-forward the service to 8080.
+
+.Create a page
+
+[source, java]
+------------------
+
+curl -i -XPOST -H"Content-Type: application/json" localhost:8080/pages -d"{\"businessName\": \"Uber\", \"address\": \"SanFrancisco, CA, USA\", \"categoryId\": 123, \"contactNumber\": \"0045987869\"}"
+
+------------------
+
+.Get a page by ID
+
+[source, java]
+------------------
+
+curl -i localhost:8080/pages/${PAGE_ID}
+
+------------------
+
+.Update a page by ID
+
+[source, java]
+------------------
+
+curl -i -XPUT -H"Content-Type: application/json" localhost:8080/pages/${PAGE_ID} -d"{\"businessName\": \"Uber Technologies\", \"address\": \"SanFrancisco, CA, USA\", \"categoryId\": 123, \"contactNumber\": \"0045987869\"}"
+
+------------------
+
+.List all pages
+[source, java]
+------------------
+
+curl -i localhost:8080/pages
+
+------------------
+
+.Delete a page by ID
+
+[source, java]
+------------------
+
+curl -i -XDELETE -H"Content-Type: application/json" localhost:8080/pages/${PAGE_ID}
+
+------------------

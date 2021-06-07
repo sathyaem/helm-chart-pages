@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Jobs &amp; CronJobs</title>
+<style>
+/* Based on Flatly from Bootswatch (https://bootswatch.com/flatly/) */
+@import url("//fonts.googleapis.com/css?family=Lato:400,700,400italic");
+
+/* document body (contains all content) */
+body {
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.42857143;
+  color: #2c3e50;
+  background-color: #ffffff;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+/* document header (contains title etc) */
+#header {
+  width: 100%;
+}
+#header>h1 {
+  border-bottom: 1px solid #ddddd8;
+  padding-bottom: 8px;
+}
+
+/* headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  color: inherit;
+}
+h1,
+h2,
+h3 {
+  margin-top: 21px;
+  margin-bottom: 10.5px;
+}
+h4,
+h5,
+h6 {
+  margin-top: 10.5px;
+  margin-bottom: 10.5px;
+}
+h1 {
+  font-size: 3em; 
+/*   font-size: 39px;  */
+}
+h2 {
+  font-size: 32px;
+}
+h3 {
+  font-size: 26px;
+}
+h4 {
+  font-size: 19px;
+}
+h5 {
+  font-size: 15px;
+}
+h6 {
+  font-size: 13px;
+}
+
+/* plain paragraph text */
+.paragraph {
+/*   font-family: sans-serif; */
+  margin: 0 0 10.5px;
+}
+p {
+/*   font-family: sans-serif; */
+  margin: 0 0 10.5px;
+}
+
+/* blockquote text */
+.quoteblock {
+  font-style: italic;
+}
+blockquote {
+  padding: 10.5px 21px;
+  margin: 0 0 21px;
+  font-size: 18.75px;
+  border-left: 5px solid #ecf0f1;
+}
+blockquote p:last-child,
+blockquote ul:last-child,
+blockquote ol:last-child {
+  margin-bottom: 0;
+}
+.blockquote-reverse,
+blockquote.pull-right {
+  padding-right: 15px;
+  padding-left: 0;
+  border-right: 5px solid #ecf0f1;
+  border-left: 0;
+  text-align: right;
+}
+.blockquote-reverse footer:before,
+blockquote.pull-right footer:before,
+.blockquote-reverse small:before,
+blockquote.pull-right small:before,
+.blockquote-reverse .small:before,
+blockquote.pull-right .small:before {
+  content: '';
+}
+.blockquote-reverse footer:after,
+blockquote.pull-right footer:after,
+.blockquote-reverse small:after,
+blockquote.pull-right small:after,
+.blockquote-reverse .small:after,
+blockquote.pull-right .small:after {
+  content: '\00A0 \2014';
+}
+
+/* blockquote attribution text */
+.attribution,
+.cite,
+blockquote footer,
+blockquote small,
+blockquote .small {
+  display: block;
+  font-size: 80%;
+  line-height: 1.42857143;
+  color: #b4bcc2;
+}
+.attribution:before,
+blockquote footer:before,
+blockquote small:before,
+blockquote .small:before {
+  content: '\2014 \00A0';
+}
+
+/* unordered list */
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 10.5px;
+}
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin-bottom: 0;
+}
+
+
+/* links */
+a {
+  color: #18bc9c;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  color: #18bc9c;
+  text-decoration: underline;
+}
+a:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+/* horizontal rules */
+hr {
+  margin-top: 21px;
+  margin-bottom: 21px;
+  border: 0;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* table */
+table {
+  background-color: transparent;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 21px;
+  border-collapse: collapse;
+}
+table col[class*="col-"] {
+  position: static;
+  float: none;
+  display: table-column;
+}
+table td[class*="col-"],
+table th[class*="col-"] {
+  position: static;
+  float: none;
+  display: table-cell;
+}
+
+/* table caption */
+caption {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #b4bcc2;
+  text-align: left;
+}
+
+/* table header row */
+thead {
+  border-bottom: 2px solid #ecf0f1;
+}
+
+/* table header cell */
+th {
+  text-align: left;
+  padding-left: 8px;
+}
+
+/* table footer */
+tfoot {
+  color: #807F81;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* table cell */
+td {
+  border-top: 1px solid #ecf0f1;
+}
+td p {
+  margin: auto;
+  padding: 8px;
+}
+
+/* table body */
+tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+tbody > tr:hover {
+  background-color: #ecf0f1;
+}
+
+/* inline code */
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;  
+}
+kbd {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #ffffff;
+  background-color: #333333;
+  border-radius: 0;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+          box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+kbd kbd {
+  padding: 0;
+  font-size: 100%;
+  font-weight: bold;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+pre {
+  display: block;
+  padding: 10.5px;
+  margin: 0 0 10.5px;
+  font-size: 15px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333333;
+  background-color: #f5f5f5;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+}
+pre code {
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre-wrap;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* image */
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+/* footer section */
+#footer {
+  margin-top: 22px;
+  padding: 14px 16px;
+  color: white;
+  background-color: #2c3e50;
+}
+
+/* responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+/* table of Contents sidebar */
+#toctitle {
+  color: #ffffff;
+}
+
+#toc ul {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#toc li {
+  display: block;
+}
+
+#toc a {
+  background-color: #2c3e50;
+  float: left;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+#toc li a:hover {
+  background-color: #1a242f;
+  text-decoration: none;
+}
+
+#toc:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Jobs &amp; CronJobs</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This lab consists of a list of exercises to demonstrate and understand
+the most commonly used kubernetes commands and concepts to ramp up your kubernetes competency skills in the area of <code>Jobs</code> and <code>CronJobs</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_learning_outcomes">Learning Outcomes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After completing the lab, you will be able to understand and use Kubernetes concepts related to the below topics:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Jobs</p>
+</li>
+<li>
+<p>CronJobs</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_start_the_minikube">Start the minikube</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start minikube locally
+<code>minikube start --driver=virtualbox</code></p>
+</li>
+<li>
+<p>Verify the kubectl context <code>kubectl config get-contexts</code> is set to minikube. If not, set it to minikube <code>kubectl config use-context minikube</code></p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Create all manifest resources in the directory <code>~/workspace/kubernetes-manifests/competencies</code>. Watch out for the right file names in the solution section.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jobs_and_cronjobs">Jobs and CronJobs</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a job to print current date and time</p>
+<details>
+<summary class="title">Click to see solution</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>~/workspace/kubernetes-manifests/competencies/jobs/job-1.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span style="color:#606">apiVersion</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">batch/v1</span></span>
+<span style="color:#606">kind</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">Job</span></span>
+<span style="color:#606">metadata</span>:
+  <span style="color:#606">labels</span>:
+    <span style="color:#606">run</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">busybox</span></span>
+  <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">busybox</span></span>
+<span style="color:#606">spec</span>:
+  <span style="color:#606">template</span>:
+    <span style="color:#606">spec</span>:
+      <span style="color:#606">containers</span>:
+      - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">image: busybox</span></span>
+        <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">busybox</span></span>
+        <span style="color:#606">command</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;/bin/sh&quot;]</span></span>
+        <span style="color:#606">args</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;-c&quot;,&quot;date&quot;]</span></span>
+      <span style="color:#606">restartPolicy</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">OnFailure</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl apply -f ~/workspace/kubernetes-manifests/competencies/jobs/job-1.yaml
+kubectl get job busybox
+kubectl get pods
+kubectl logs &lt;job-pod-name&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl delete job busybox</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>Create a job to calculate the value of pi upto 1000 digits and print the output in command line. Use Perl to calculate.</p>
+<details>
+<summary class="title">Click to see solution</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>~/workspace/kubernetes-manifests/competencies/jobs/job-2.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span style="color:#606">apiVersion</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">batch/v1</span></span>
+<span style="color:#606">kind</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">Job</span></span>
+<span style="color:#606">metadata</span>:
+  <span style="color:#606">labels</span>:
+    <span style="color:#606">run</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">perl</span></span>
+  <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">perl</span></span>
+<span style="color:#606">spec</span>:
+  <span style="color:#606">template</span>:
+    <span style="color:#606">spec</span>:
+      <span style="color:#606">containers</span>:
+      - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">image: perl</span></span>
+        <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">perl</span></span>
+        <span style="color:#606">command</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;perl&quot;,&quot;-Mbignum=bpi&quot;, &quot;-wle&quot;, &quot;print bpi(1000)&quot;]</span></span>
+      <span style="color:#606">restartPolicy</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">Never</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl apply -f ~/workspace/kubernetes-manifests/competencies/jobs/job-2.yaml
+kubectl get job perl
+kubectl get pods
+kubectl logs &lt;job-pod-name&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl delete job perl</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>Create a job which runs a workload which simulates rolling the dice and returns a zero exit code (i.e. success) when you get a six.</p>
+<details>
+<summary class="title">Click to see solution</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>~/workspace/kubernetes-manifests/competencies/jobs/job-3.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span style="color:#606">kind</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">Job</span></span>
+<span style="color:#606">apiVersion</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">batch/v1</span></span>
+<span style="color:#606">metadata</span>:
+  <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-3</span></span>
+<span style="color:#606">spec</span>:
+  <span style="color:#606">completions</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">1</span></span>
+  <span style="color:#606">parallelism</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">1</span></span>
+  <span style="color:#606">template</span>:
+    <span style="color:#606">metadata</span>:
+      <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-3</span></span>
+    <span style="color:#606">spec</span>:
+      <span style="color:#606">restartPolicy</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">Never</span></span>
+      <span style="color:#606">containers</span>:
+        - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">name: job-3</span></span>
+          <span style="color:#606">image</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">alpine</span></span>
+          <span style="color:#606">command</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;/bin/sh&quot;]</span></span>
+          <span style="color:#606">args</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;-c&quot;, &quot;if [ \&quot;$(shuf -i 1-6 -n 1)\&quot; = \&quot;6\&quot; ]; then exit 0; else exit 1; fi&quot;]</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl apply -f ~/workspace/kubernetes-manifests/competencies/jobs/job-3.yaml
+kubectl get job job-3</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl delete job job-3</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>Create a CronJob that will ping Github every minute and check that their site hasn&#8217;t gone down. You can use alpine image.</p>
+<div class="paragraph">
+<p><code>image: busybox</code></p>
+</div>
+<div class="paragraph">
+<p><code>command: ["/bin/sh"]</code></p>
+</div>
+<div class="paragraph">
+<p><code>args: ["-c", "ping -w 1 github.com"]</code></p>
+</div>
+<details>
+<summary class="title">Click to see solution</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>~/workspace/kubernetes-manifests/competencies/jobs/job-4.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span style="color:#606">apiVersion</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">batch/v1beta1</span></span>
+<span style="color:#606">kind</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">CronJob</span></span>
+<span style="color:#606">metadata</span>:
+  <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-4</span></span>
+<span style="color:#606">spec</span>:
+  <span style="color:#606">jobTemplate</span>:
+    <span style="color:#606">metadata</span>:
+      <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-4</span></span>
+    <span style="color:#606">spec</span>:
+      <span style="color:#606">template</span>:
+        <span style="color:#606">metadata</span>:
+        <span style="color:#606">spec</span>:
+          <span style="color:#606">containers</span>:
+          - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">image: busybox</span></span>
+            <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-4</span></span>
+            <span style="color:#606">command</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;/bin/sh&quot;]</span></span>
+            <span style="color:#606">args</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;-c&quot;, &quot;ping -w 1 github.com&quot;]</span></span>
+          <span style="color:#606">restartPolicy</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">OnFailure</span></span>
+  <span style="color:#606">schedule</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">'*/1 * * * *'</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl apply -f ~/workspace/kubernetes-manifests/competencies/jobs/job-4.yaml
+kubectl get cronjob job-4
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl logs &lt;pod-name&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl delete cronjob job-4</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>Create a cron job to print current date and time every minute</p>
+<details>
+<summary class="title">Click to see solution</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>~/workspace/kubernetes-manifests/competencies/jobs/job-5.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span style="color:#606">apiVersion</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">batch/v1beta1</span></span>
+<span style="color:#606">kind</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">CronJob</span></span>
+<span style="color:#606">metadata</span>:
+  <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-5</span></span>
+<span style="color:#606">spec</span>:
+  <span style="color:#606">jobTemplate</span>:
+    <span style="color:#606">metadata</span>:
+      <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-5</span></span>
+    <span style="color:#606">spec</span>:
+      <span style="color:#606">template</span>:
+        <span style="color:#606">metadata</span>:
+        <span style="color:#606">spec</span>:
+          <span style="color:#606">containers</span>:
+          - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">image: busybox</span></span>
+            <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-5</span></span>
+            <span style="color:#606">command</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;/bin/sh&quot;]</span></span>
+            <span style="color:#606">args</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;-c&quot;,&quot;date&quot;]</span></span>
+          <span style="color:#606">restartPolicy</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">OnFailure</span></span>
+  <span style="color:#606">schedule</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">'*/1 * * * *'</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl apply -f ~/workspace/kubernetes-manifests/competencies/jobs/job-5.yaml
+kubectl get cronjob job-5
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl logs &lt;pod-name&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl delete cronjob job-5</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>Create a cron job to print "Time: 3.30 pm. It is break time. Lets stretch out a bit or have a coffee!" at 3.30pm today</p>
+<details>
+<summary class="title">Click to see solution</summary>
+<div class="content">
+<div class="paragraph">
+<p><code>~/workspace/kubernetes-manifests/competencies/jobs/job-6.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span style="color:#606">apiVersion</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">batch/v1beta1</span></span>
+<span style="color:#606">kind</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">CronJob</span></span>
+<span style="color:#606">metadata</span>:
+  <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-6</span></span>
+<span style="color:#606">spec</span>:
+  <span style="color:#606">jobTemplate</span>:
+    <span style="color:#606">metadata</span>:
+      <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-6</span></span>
+    <span style="color:#606">spec</span>:
+      <span style="color:#606">template</span>:
+        <span style="color:#606">metadata</span>:
+        <span style="color:#606">spec</span>:
+          <span style="color:#606">volumes</span>:
+            - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">name: tz-config</span></span>
+              <span style="color:#606">hostPath</span>:
+                <span style="color:#606">path</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">/usr/share/zoneinfo/Europe/Moscow</span></span>
+          <span style="color:#606">containers</span>:
+          - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">image: busybox</span></span>
+            <span style="color:#606">name</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">job-6</span></span>
+            <span style="color:#606">command</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;/bin/sh&quot;]</span></span>
+            <span style="color:#606">args</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">[&quot;-c&quot;,&quot;Time: 3.30 pm. It is break time. Lets stretch out a bit or have a coffee!&quot;]</span></span>
+            <span style="color:#606">volumeMounts</span>:
+              - <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">name: tz-config</span></span>
+                <span style="color:#606">mountPath</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">/etc/localtime</span></span>
+          <span style="color:#606">restartPolicy</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">OnFailure</span></span>
+  <span style="color:#606">schedule</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#D20">'30 15 * * *'</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl apply -f ~/workspace/kubernetes-manifests/competencies/jobs/job-6.yaml
+kubectl get cj job-6
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl logs &lt;pod-name&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">kubectl delete cronjob job-6</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

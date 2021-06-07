@@ -1,0 +1,600 @@
+= Pods
+:stylesheet: boot-flatly.css
+:nofooter:
+:data-uri:
+:icons: font
+:linkattrs:
+
+This lab consists of a list of exercises to demonstrate and understand
+the most commonly used kubernetes commands and concepts to ramp up your kubernetes competency skills in the area of `Pods`.
+
+
+
+== Learning Outcomes
+After completing the lab, you will be able to understand and use Kubernetes concepts based on use-case scenarios in the following domains:
+
+. Advanced Configuration & Custom Commands
+. Environment Variables
+. Probes and Observability
+. Volumes
+. SecurityContexts
+
+=== Start the minikube
+
+. Start minikube locally
+`minikube start --driver=virtualbox`
+
+. Verify the kubectl context `kubectl config get-contexts` is set to minikube. If not, set it to minikube `kubectl config use-context minikube`
+
+[NOTE]
+====
+Create all manifest resources in the directory `~/workspace/kubernetes-manifests/competencies`. Watch out for the right file names in the solution section.
+====
+
+=== Advanced Configuration & Custom Commands
+
+. Create a busybox pod which prints "Hello from pages Yellow Pages" on the console using manifest file.
+
++
+
+.Click to see solution
+[%collapsible]
+====
+
+`~/workspace/kubernetes-manifests/competencies/pods/1.yaml`
+
+
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  containers:
+    - image: busybox
+      name: busybox
+      command: ["/bin/sh"]
+      args: ["-c","echo Hello from pages Yellow Pages"]
+------------------
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/1.yaml
+------------------
+[source, shell script]
+------------------
+kubectl delete po busybox
+------------------
+====
+
+. Create a busybox pod which prints "Hello from pages Yellow Pages" on the console, for every 10 seconds infinitely using manifest file.
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/2.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  containers:
+    - image: busybox
+      name: busybox
+      command: ["/bin/sh"]
+      args: ["-c","while true;do echo 'Hello from pages Yellow Pages';sleep 10;done"]
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/2.yaml
+------------------
+[source, shell script]
+------------------
+kubectl logs busybox -f
+------------------
+[source, shell script]
+------------------
+kubectl delete po busybox
+------------------
+====
+. Create an nginx pod and test it in the browser  - Instructions
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/3.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+
+------------------
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/3.yaml
+
+kubectl port-forward pod/nginx 8080:80
+------------------
+[source, textmate]
+------------------
+curl localhost:8080   OR
+localhost:8080 {from the browser}
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+
+. Create a busybox pod which prints "Hello from pages Yellow Pages" on the console imperatively
+
++
+.Click to see solution
+[%collapsible]
+====
+[source, shell script]
+------------------
+kubectl run busybox --image=busybox  sh -- -c 'echo "Hello from pages Yellow Pages"'
+------------------
+
+[source, shell script]
+------------------
+kubectl delete po busybox
+------------------
+====
+
+. Create an nginx pod imperatively and test it in the browser or using curl command
+
++
+.Click to see solution
+[%collapsible]
+====
+[source, shell script]
+------------------
+kubectl run nginx --image=nginx
+
+kubectl port-forward pod/nginx 8080:80
+------------------
+[source, shell script]
+------------------
+curl localhost:8080
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+. Create a busybox pod which prints the `current date` on the console  - Instructions
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/6.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  containers:
+    - image: busybox
+      name: busybox
+      command: ["/bin/sh"]
+      args: ["-c","date"]
+------------------
+====
+. Create a busybox pod which prints `current date` on the console, for every 10 seconds infinitely  - Instructions
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/7.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  containers:
+    - image: busybox
+      name: busybox
+      command: ["/bin/sh"]
+      args: ["-c","while true;do date;sleep 10;done"]
+------------------
+====
+
+
+
+=== Environment variables:
+
+. Create environment variables for busybox pod with key=`course` and value=`K8s` and also prints "Hello!" on the console, for every 10 seconds infinitely using manifest file.
+    Verify the environment variables are set properly
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/8.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  containers:
+    - image: busybox
+      name: busybox
+      command: ["/bin/sh"]
+      args: ["-c","while true;do echo 'Hello!';sleep 10;done"]
+      env:
+        - name: course
+          value: k8s
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/8.yaml
+------------------
+[source, shell script]
+------------------
+kubectl exec -it busybox -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po busybox
+------------------
+====
+
+
+. Create environment variables for pages application with key=`PAGE_CONTENT` and value=`Hello from pages environment`
+    Verify the environment variables are set properly  - Instructions
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/9.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  containers:
+    - image: [docker-username]/pages:1.0
+      name: pages
+      env:
+        - name: PAGE_CONTENT
+          value: Hello from pages environment
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/9.yaml
+------------------
+[source, shell script]
+------------------
+kubectl exec -it pages -- env
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+
+
+
+=== Probes and Observability:
+
+
+. Create a simple web server that starts serving traffic after some delay while the application starts up. If we didn't configure our
+readiness probe, Kubernetes would either start sending traffic to the container before we're ready, or it would mark the pod as unhealthy and never send it traffic. Use the image `python:2.7-alpine`
+
+. Create a pod that runs a web server. Configure readiness probe within the pod so that Kubernetes sends the
+first request after 5 seconds and check if port 80 is accessible. Hint: use nginx image
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/10.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    readinessProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 5
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/10.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx -w
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+
+. In the previous scenario add a liveness probe of type exec command to check if index.html exists whose exit code determines the success of the probe every 10 seconds.
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/11.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    readinessProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 5
+    livenessProbe:
+      exec:
+        command:
+          - cat
+          - /usr/share/nginx/html/index.html
+      periodSeconds: 10
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/11.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po nginx -w
+------------------
+[source, shell script]
+------------------
+kubectl delete po nginx
+------------------
+====
+. Configure liveness and readiness probe for pages to check if the application is accessible at port 8080 - Instructions
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/12.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pages
+  name: pages
+spec:
+  containers:
+  - image: [docker-username]/pages:1.0
+    name: pages
+    readinessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 5
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      periodSeconds: 10
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/12.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po pages -w
+------------------
+[source, shell script]
+------------------
+kubectl delete po pages
+------------------
+====
+
+== Volumes
+
+. Mount a directory `/var/output` to the container which writes the current date to a file called `log.txt` inside the mounted directory `/var/output` for every `5 seconds`. The directory should reside inside the pod and should cease to exist once the pod terminates.
+HINT:: Use `EmptyDir` type of volume
+
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/volumes/1.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox-1
+spec:
+  volumes:
+    - name: log-volume
+      emptyDir: {}
+  containers:
+    - image: busybox
+      name: busybox-1
+      command: ["/bin/sh"]
+      args: ["-c","while true; do date > /var/output/log.txt; sleep 5;done"]
+      volumeMounts:
+        - name: log-volume
+          mountPath: /var/output
+
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/volumes/1.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po -w
+------------------
+[source, shell script]
+------------------
+kubectl exec -it busybox-1 -- cat /var/out/log.txt
+------------------
+
+====
+
+
+. Mount a directory `/var/output` to the container which writes the current date to a file called `log.txt` inside the mounted directory `/var/output` for every `5 seconds`. The directory should reside external to the pod and should exist even if the pod terminates or restarts.
+HINT:: Use `HostPath` type of volume
+
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/volumes/2.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox-2
+spec:
+  volumes:
+    - name: log-volume
+      hostPath:
+        path: /var/output
+  containers:
+    - image: busybox
+      name: busybox-2
+      command: ["/bin/sh"]
+      args: ["-c","while true; do date > /var/output/log.txt; sleep 5;done"]
+      volumeMounts:
+        - name: log-volume
+          mountPath: /var/output
+
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/volumes/2.yaml
+------------------
+[source, shell script]
+------------------
+kubectl get po -w
+------------------
+[source, shell script]
+------------------
+kubectl exec -it busybox-2 -- cat /var/out/log.txt
+kubectl delete po busybox-1
+kubectl delete po busybox-2
+minikube ssh
+cat /var/out/log.txt
+------------------
+
+====
+
+
+== SecurityContext
+. Create a pod with a container that writes the current date to a file in a mounted volume at /etc/kal-directory/date-file.txt every five seconds. The created file should have the user ID 45 and the group ID 231 which will be useful for auditing and tracking files system updates. Use alpine image.
+
++
+.Click to see solution
+[%collapsible]
+====
+`~/workspace/kubernetes-manifests/competencies/pods/13.yaml`
+[source, yaml]
+------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: alpine
+  name: alpine
+spec:
+  securityContext:
+    runAsUser: 45
+    runAsGroup: 231
+  volumes:
+    - name: log-date-vol
+      emptyDir: {}
+  containers:
+  - image: alpine
+    name: alpine
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do date >> /etc/kal-directory/date-file.txt; sleep 5; done"]
+    volumeMounts:
+      - name: log-date-vol
+        mountPath: /etc/kal-directory
+------------------
+
+[source, shell script]
+------------------
+kubectl apply -f ~/workspace/kubernetes-manifests/competencies/pods/13.yaml
+------------------
+[source, shell script]
+------------------
+kubectl exec -it alpine -- ps
+------------------
+[source, shell script]
+------------------
+kubectl exec -it alpine -- cat /etc/kal-directory/date-file.txt
+------------------
+[source, shell script]
+------------------
+kubectl delete po alpine
+------------------
+====
