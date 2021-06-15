@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "mysql.fullname" . }}
 data:
-  spring.datasource.username: {{ .Values.config.spring_datasource_username }}  
+  spring.datasource.username: {{ .Values.config.spring_datasource_username }}
   V1__inital_schema.sql: |
     USE pages;
     create table pages(

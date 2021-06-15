@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ include "api.fullname" . }}    
+    app: {{ include "api.fullname" . }}
   name: {{ include "api.fullname" . }}
 spec:
   ports:

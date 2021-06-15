@@ -38,4 +38,4 @@ spec:
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
-            claimName: {{ include "mysql.fullname" . }} 
+            claimName: {{ include "mysql.fullname" . }}

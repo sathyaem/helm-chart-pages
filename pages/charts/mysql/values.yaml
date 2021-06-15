@@ -14,7 +14,6 @@ service:
   protocol: TCP
   targetPort: 3306
 
-
 image:
   repository: mysql
   tag: "8.0"
@@ -28,9 +27,6 @@ env:
 
 volumeMounts:
   mountPath: /var/lib/mysql
-
-# exports:
-#   mysql_svc_name: mysql
 
 
 job:
@@ -57,3 +53,5 @@ storageClass:
   provisioner: k8s.io/minikube-hostpath
   reclaimPolicy: Delete
   volumeBindingMode: Immediate
+
+mysql_svc_name: mysql

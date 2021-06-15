@@ -1,8 +1,6 @@
-
 deployment:
   containerPort: 8080
 
-# mysql_svc_name: pages
 
 secrets:
   SDP: cGFzc3dvcmQ=
@@ -26,20 +24,18 @@ image:
 config:
   PAGE_CONTENT: Green-Pages coming from Yellow-World!
 
-dbname: pages
-
 env:
   SPRING_DATASOURCE_URL: jdbc:mysql://pages-mysql/pages?useSSL=false
   SPRING_DATASOURCE_USERNAME: root
-  DEBUG: true 
-  LOGGING_FILE_NAME: camden/logs/app.log
+  DEBUG: true
+  LOGGING_FILE_NAME: dev/logs/app.log
   LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: debug
   LOGGING_LEVEL_ROOT: debug
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
 
 
 volumeMounts:
-  mount_path: /camden  
+  mount_path: /dev
 
 readinessProbe:
   tcpSocket:
@@ -52,3 +48,6 @@ livenessProbe:
     port: 8080
   initialDelaySeconds: 15
   periodSeconds: 30
+
+mysql_svc_name: mysql
+dbname: pages

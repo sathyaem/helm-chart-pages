@@ -2,18 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ include "api.fullname" . }}    
+    app: {{ include "api.fullname" . }}
   name: {{ include "api.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "api.fullname" . }}      
+      app: {{ include "api.fullname" . }}
   strategy: {}
   template:
     metadata:
       labels:
-        app: {{ include "api.fullname" . }}        
+        app: {{ include "api.fullname" . }}
     spec:
       containers:
         - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
